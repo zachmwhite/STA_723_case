@@ -8,6 +8,8 @@ head(ars.data)
 # Basically write a report to help them understand what things predict why people switch wells
 # What's the rationale of people switching
 
+#asdf
+
 # Arsenic = amount of arsenic in well
 # educ = years of schooling of head of household
 # dist = distance in meters to nearest known safe well
