@@ -53,30 +53,51 @@ summarise()
 glm(switch~., data = ars.data, family = binomial())
 
 # Cross validation
-n = nrow(ars.data)
 n.15 = n*.15
+n = nrow(ars.data)
 n.iter = 100
-n.methods = 3
-acc = matrix(0, nrow = n.iter, ncol = n.methods)
-colnames(acc) = c("full_log","without_assoc","bayes")
+n.methods = 4
+accuracy = matrix(0, nrow = n.iter, ncol = n.methods)
+colnames(accuracy) = c("full_log","without_assoc","interaction", "without_one_int")
 for(i in 1:n.iter){
   test.index = sample(n,n.15)
   train.data = ars.data[-test.index,]
   test.data = ars.data[test.index,]
+  # Full model
   full.train.lm = glm(switch~., data= train.data, family = binomial())
   full.fitted = predict(full.train.lm, newdata = test.data, type = 'response')
-  full.results = ifelse(full.fitted > full.fitted, 1, 0)
+  full.results = ifelse(full.fitted > .5, 1, 0)
   misclass.full = mean(full.results != test.data$switch)
-  acc[i,1] = 1-misclass.full
+  accuracy[i,1] = 1-misclass.full
   
   # Taking out association
   almost.train.lm = glm(switch~educ+arsenic+dist, data = train.data, family = binomial())
   almost.fitted = predict(almost.train.lm, newdata = test.data[,c(1,2,3,5)])
-  almost.results = ifelse(almost.fitted > almost.fitted,1,0)
+  almost.results = ifelse(almost.fitted > .5,1,0)
   misclass.almost = mean(almost.results != test.data$switch)
-  acc[i,2] = 1-misclass.almost
+  accuracy[i,2] = 1-misclass.almost
   
+  # With interactions
+  interaction.lm = glm(switch~educ + arsenic + dist + assoc + arsenic:educ + educ:dist + arsenic:dist, data = train.data, family = binomial())
+  interaction.fitted = predict(interaction.lm, newdata = test.data)
+  interaction.results = ifelse(interaction.fitted > .5,1,0)
+  misclass.interaction = mean(interaction.results != test.data$switch)
+  accuracy[i,3] = 1 - misclass.interaction
+  
+  without.ars.dist.int = glm(switch~educ+arsenic+dist+arsenic:educ+educ:dist, data = train.data, family = binomial())
+  without.fitted = predict(without.ars.dist.int, newdata = test.data[,c(1,2,3,5)])
+  without.results = ifelse(without.fitted > .5, 1,0)
+  missclass.without = mean(without.results != test.data$switch)
+  accuracy[i,4] = 1 - missclass.without
   # Bayesian methodology right here
 }
+
+apply(accuracy,2,mean)
+# Summaries
+summary(full.train.lm)
+summary(almost.train.lm)
+summary(interaction.lm)
+summary(without.ars.dist.int)
+
 train.index
 fitted.results = predict(full.train.log)
