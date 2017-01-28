@@ -1,5 +1,5 @@
 # First one
-#ars.data = read.table("http://www2.stat.duke.edu/~st118/fye12takehome.txt", sep = " ", header = TRUE)
+ars.data = read.table("http://www2.stat.duke.edu/~st118/fye12takehome.txt", sep = " ", header = TRUE)
 ars.data <- read.table("/home/ggg/Desktop/Courses/firstyearcourses/STA723/Assignment 1/data.txt")
 head(ars.data)
 
@@ -215,3 +215,13 @@ anova(without.ars.dist.int, test = "Chisq")
 
 # Confusion matrices
 fitted.results = predict(full.train.log)
+
+# Plots for each of the continuous variables.  Probably not the best way to do it.
+## Arsenic
+range(log(ars.data$arsenic))
+x.ars = seq(0,3,by = .01)
+
+
+## Distance
+range(log(ars.data$dist + 1))
+x.dist = seq(0,6,by = .01)
