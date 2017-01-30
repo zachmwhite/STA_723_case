@@ -1,0 +1,66 @@
+Power analysis:
+
+You are asked to help design a new study on the factors that affect well-switching, sampling from a population that similar to the sample you analyzed in the FYE. In particular, assume you primary interest is to investigate the effect of distance from the well (scale: 20 meters) on well switching controlled for education and arsenic level using a logistic model. Provide a power analysis (also known as sample size calculation) with type I error fixed at 0.05 – present your result in a graph, as the standard in power analysis.  
+
+If you do not know the concept of power analysis, use all online resources to look up. There are different ways of doing a power analysis; choose and implement one approach and discuss limitations and extensions. This is an individual assignment. We will randomly pick four students to present your approach in class.
+
+Note: as a statistician, particularly in academia, power analysis is probably one of the most common requests you will get from collaborators or clients in practice. Most of the time, closed-form formula does not exist. 
+
+Gameplan
+Figure out how to draw from the distributions relatively well. 
+association = rbinom(1, 1,p)
+education = this will be a little bit more complicated
+arsenic = I'm sure I can figure out some gamma distribution that will be good enough approximation
+
+distance = Here we manufacture the data.  I'm thinking start with a uniform draw from the values that we have.
+
+So the process
+
+Do this all in a loop.  As repeititions go up 
+
+Randomly draw a value from education = multinomial from the empirical averages and stuff
+Randomly draw a value from association = rbinom with the empirical p
+Randomly draw arsenic = create some gamma distribution that is similar to it 
+Choose a starting value for the distance.  Start incrementing them by 20 like described
+Choose sample size
+N = test sample size
+n = floor(Divide N / (length(seq(starting.value,max(distance),by = 20))))
+modulo
+repeat the variable sets n times. plus the modulo of the first times
+
+generate N responses using r binom from the rates
+Fit the model
+Find the coefficients that are less that .05
+Calculate model deviance
+Calculate the significants
+
+for the effect power for each of the variables
+sum of the significant / number of repetitions
+
+###############################################
+# Way number 2
+##############################################
+Bootstrap
+
+Scale Data
+Find MLE values
+
+n = sample size
+Figure out efect size. 5 different valuse I would say
+draw n of the data points with replacement
+Fix the coefficients.  The variables not of interest with their MLE's
+Fix the coefficient of interest with their effect size
+Fit glm
+Test if it was significant
+REpeat it again for multiple iterations.  That's how we actually get the power
+
+So we will need to do some nested for loops.  
+Initial round = bigger jumps. like seq(100,5000, by = 100)
+Fewer number of repititons
+
+
+Limititations .  We already have the data
+
+
+
+
