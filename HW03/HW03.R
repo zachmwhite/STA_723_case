@@ -25,14 +25,52 @@ data$quality = as.numeric(quality)
 data$log.odds = log(adj.OR)
 data$log.lcl = log(lcl)
 data$log.ucl = log(ucl)
-data$var = (-(lcl - adj.OR)/1.96)^2
+data$log.var = (-(data$log.ucl - data$log.odds)/1.96)^2
 meta.data = data
+inv.var = 1 / data$log.var
+#Change the way the weights work
+
 #############################################
 # Random Effects Model
 #############################################
-rma.model = rma(adj.OR,var,data = meta.data)
-summary(rma.model)
 
+# Weighting method 1 = Inverse Variance weighting
+weight1 = 1 / data$log.var
+rma.weight1 = rma(log.odds,  log.var,measure = "OR",method = "DL", data = meta.data, weights = weight1)
+summary(rma.weight1)
+forest(rma.weight1)
+funnel(rma.weight1)
+# Weighting method 2
+weight2 = quality / sum(quality)
+rma.weight2.test = rma(log.odds, log.var, measure = "OR", method = "DL", data = meta.data, weights = meta.data$quality)
+rma.weight2 = rma(log.odds, log.var, measure = "OR", method = "DL", data = meta.data, weights = weight2)
+forest(rma.weight2)
+forest(rma.weight2.test)
+funnel(rma.weight2)
+funnel(rma.weight2.test)
+# Weighting method 3 = A combination of the two.
+# Turn them into z-scores
+qual.scale = (quality - min(quality))/max(quality)
+var.scale = -(meta.data$log.var - max(meta.data$log.var))/max(meta.data$log.var)
+comp.weight = qual.scale + var.scale
+rma.weight3 = rma(log.odds,log.var, measure = "OR", method = "DL", data = meta.data, weights = comp.weight)
+forest(rma.weight3)
+funnel(rma.weight3)
+
+
+# Comparisons
+forest(rma.weight1)
+forest(rma.weight2)
+forest(rma.weight3)
+funnel(rma.weight1)
+funnel(rma.weight2)
+funnel(rma.weight3)
+
+
+rma.model.1 = rma(log.odds,measure = "OR",var,data = meta.data, weights = )
+summary(rma.model)
+forest(rma.model, slab = meta.data$author, refline = 0)
+funnel(rma.model)
 
 #############################################
 
