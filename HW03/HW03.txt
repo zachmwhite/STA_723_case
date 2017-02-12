@@ -25,3 +25,9 @@ We don't have sample sizes
 We need to create the weights probably = we just have quality scores
 Since we're missing n, we can't get the variance with the confidence intervals
 We have 95% confidence intervals.
+
+February 7
+Interpretation of summary output
+I2 = How much of the total variability in the effect sie estimates can be attributed to heterogeneity
+H2 = ratio of total amount of variability comes from within sample variation
+confint(res)

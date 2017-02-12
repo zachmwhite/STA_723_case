@@ -59,13 +59,26 @@ funnel(rma.weight3)
 
 
 # Comparisons
-forest(rma.weight1)
-forest(rma.weight2)
-forest(rma.weight3)
-funnel(rma.weight1)
-funnel(rma.weight2)
-funnel(rma.weight3)
+forest(rma.weight1, main = "Inverse Variance",slab = meta.data$author, refline = 0)
+forest(rma.weight2, main = "Quality Score",slab = meta.data$author, refline = 0)
+forest(rma.weight3, main = "Composite of Inverse Variance and Quality",slab = meta.data$author, refline = 0)
+funnel(rma.weight1, main = "Inverse Variance")
+funnel(rma.weight2, main = "Quality Score")
+funnel(rma.weight3, main = "Composite of Inverse Variance and Quality")
+summary(rma.weight1)
+.1902 + c(-1,1)*1.96*.0794
+exp(.1902 + c(-1,1)*1.96*.0794)
+confint(rma.weight1)
+summary(rma.weight2)
+.3335 + c(-1,1)*1.96*.1114
+exp(.3335 + c(-1,1)*1.96*.1114)
+confint(rma.weight2)
+summary(rma.weight3)
+.2624 + c(-1,1)*1.96*.0751
+exp(.2624 + c(-1,1)*1.96*.0751)
+confint(rma.weight3)
 
+summary(rma.weight1)$estimate + c(-1,1)*1.96*summary(rma.weight1)$se
 
 rma.model.1 = rma(log.odds,measure = "OR",var,data = meta.data, weights = )
 summary(rma.model)
