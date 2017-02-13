@@ -1,0 +1,23 @@
+Monitoring programs to track long-term changes in population size are important for applied ecological studies. Such monitoring programs often have multiple objectives that include monitoring trends, estimating abundance, and estimating the effects of covariates. Your job is to analyze trend, abundance, and the effects of covariates using a dataset of counts of springbok antelope around 25 watering holes. If you think the dataset cannot answer all these questions, then say why.
+ 
+The data come from aerial surveys. On each survey date, an airplane flies a route over the collection of sites (watering holes) at an altitude of 200-300 meters. Springbok are counted at each site. A survey normally includes counts at all 25 sites but occasionally some sites could not be counted because of poor weather. Each site was circled until the observer was confident an accurate count had been made. For larger groups of springbok, color photographs were taken and springbok were counted later from the photos. Several surveys,usually 7-10, were made each year. You have data from 1990-2002 for sites 12-21, 23, and 24. The other sites were excluded because they usually don't have many antelope. Within a year, springbok are faithful to a single site; i.e., if a springbok goes to site i on one day, it will return to site i on other days.
+ 
+Many studies have demonstrated effects of date and time-of-day on springbok counts; therefore, these covariates are included in the dataset. Whether they are relevant in this particular dataset remains unknown, until you tell us.
+ 
+Headers and first 4 lines:
+LOCNUMBER SITEI YEAR DATE HourFromNoon COUNTS
+12 1 1990 28 0.800 50
+12 1 1990 29 0.117 41
+12 1 1990 30 -0.167 43
+
+
+Main goals: Analyze Trend, abundance, and the effects of coavariates
+If the dataset cannot answer all these questions, explain why?
+
+Covariates: date and time-of-day.  These have been relevant in the past.  Are they relevant now?
+
+Possibilities:
+Hierarchical Model with Sites.
+
+
+
