@@ -59,13 +59,30 @@ funnel(rma.weight3)
 
 
 # Comparisons
-forest(rma.weight1)
-forest(rma.weight2)
-forest(rma.weight3)
-funnel(rma.weight1)
-funnel(rma.weight2)
-funnel(rma.weight3)
+forest(rma.weight1, main = "Random Effect",slab = meta.data$author, refline = 0)
 
+forest(rma.fixed, main = "Fixed Effect", slab = meta.data$author, refline = 0)
+funnel(rma.weight1, main = "Random Effect")
+funnel(rma.fixed, main = "Fixed Effect")
+
+forest(rma.weight2, main = "Quality Score",slab = meta.data$author, refline = 0)
+forest(rma.weight3, main = "Composite of Inverse Variance and Quality",slab = meta.data$author, refline = 0)
+funnel(rma.weight2, main = "Quality Score")
+funnel(rma.weight3, main = "Composite of Inverse Variance and Quality")
+summary(rma.weight1)
+.1902 + c(-1,1)*1.96*.0794
+exp(.1902 + c(-1,1)*1.96*.0794)
+confint(rma.weight1)
+summary(rma.weight2)
+.3335 + c(-1,1)*1.96*.1114
+exp(.3335 + c(-1,1)*1.96*.1114)
+confint(rma.weight2)
+summary(rma.weight3)
+.2624 + c(-1,1)*1.96*.0751
+exp(.2624 + c(-1,1)*1.96*.0751)
+confint(rma.weight3)
+
+summary(rma.weight1)$estimate + c(-1,1)*1.96*summary(rma.weight1)$se
 
 rma.model.1 = rma(log.odds,measure = "OR",var,data = meta.data, weights = )
 summary(rma.model)
@@ -84,9 +101,18 @@ sum(quality*(adj.OR - weighted.ave)^2)
 plot(quality,ucl - lcl)
 
 # Odds ratio with Confidence Interval
-plotCI(1:7,y = adj.OR,li = lcl,ui = ucl, xlab = "Study Number", ylab = "Odds Raio")
+par(mfrow = c(2,1))
+plotCI(1:7,x = adj.OR,li = lcl,ui = ucl, xlab = "Odds Ratio", err = "x", ylab = "")
+plotCI(1:7,x = meta.data$log.odds,li = meta.data$log.lcl,ui = meta.data$log.ucl, xlab = "Log-Odds Ratio", err = "x", ylab = "")
+
 
 # Fixed Effects
+weight1 = 1 / data$log.var
+rma.fixed = rma(log.odds,  log.var,measure = "OR",method = "FE", data = meta.data, weights = weight1)
+summary(rma.fixed)
+summary(rma.weight1)
+forest(rma.fixed)
+funnel(rma.fixed)
 
 # Random Effects
 cat("model {
