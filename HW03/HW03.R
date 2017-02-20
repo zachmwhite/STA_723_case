@@ -1,4 +1,3 @@
-# HW 03 Meta analysis
 install.packages(c("meta","metafor","rmeta"))
 library(meta)
 library(metafor)

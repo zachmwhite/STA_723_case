@@ -1,0 +1,26 @@
+model
+{
+    for (n in 1:N) {
+        log(mu[n]) <- overall + alpha[site[n]] + beta[year[n]] + 
+            phi * alpha[site[n]] * beta[year[n]] + gamma * date[n] + 
+            delta * hour[n]
+        Y[n] ~ dpois(mu[n])
+    }
+    alpha[1] <- 0.00000E+00
+    beta[1] <- 0.00000E+00
+    for (i in 2:I) {
+        alpha[i] ~ dnorm(alpha.mu, alpha.phi)
+    }
+    for (t in 2:T) {
+        beta[t] ~ dnorm(beta.mu, beta.phi)
+    }
+    overall ~ dnorm(0.00000E+00, 1.00000E-05)
+    gamma ~ dnorm(0.00000E+00, 1.00000E-05)
+    delta ~ dnorm(0.00000E+00, 1.00000E-05)
+    alpha.mu ~ dnorm(0.00000E+00, 1.00000E-06)
+    alpha.sigma ~ dunif(0.00000E+00, 100)
+    alpha.phi <- 1/(alpha.sigma * alpha.sigma)
+    beta.mu ~ dnorm(0.00000E+00, 1.00000E-06)
+    beta.phi <- pow(beta.sigma, -2)
+    beta.sigma ~ dunif(0.00000E+00, 100)
+}

@@ -1,0 +1,40 @@
+What do Barbie dolls, food wrap, edamame, and spermicides have in common? And what do they have to do with low sperm counts, precocious puberty, and breast cancer? ”Everything,” say those who support the notion that hormone mimics are disrupting everything from fish gender to human fertility. ”Nothing,” counter others who regard the connection as trumped up, alarmist chemophobia. The controversy swirls around the significance of a number of substances that behave like estrogens and appear to be practically everywhere–from plastic
+toys to topical sunscreens.
+
+Estrogens are a group of hormones produced in both the female ovaries and male testes, with larger amounts made in females than in males. They are particularly influential during puberty, menstruation, and pregnancy, but they also help regulate the growth of bones, skin, and other organs and tissues. In general, they have a strong effect of endocrine function by disrupting these functions.
+
+Over the past 10 years, many synthetic compounds and plant products present in the environment have been found to affect hormonal functions in various ways. Those that have estrogenic activity have been labeled as environmental estrogens. There is increasing concern that chemicals in the environment referred to as environmental estrogens may be causing adverse effects through endocrine disruption.
+
+Hence, there is a need for new approaches for screening chemicals for endocrine disrupting effects. The rat uterotrophic bioassay provides one approach for identifying agonists or antagonists of estrogen. An estrogen antagonist is a compound that blocks the binding of estrogen and so blocks the action of estrogen. An estrogen agonist is a compound that enhances the action of estrogen.
+
+Rats in this study are either immature or have their ovaries removed and therefore do not produce estrogen. The point of the study is to use the rats as an assay to test the effect of estrogen agonists and antagonists on a particular hormonal response, the weight of the uterus. This is done by varying the amount of the agonist or antagonist give to the rat. The response is the weight of the uterus, with uterus weight expected to exhibit an increasing dose response trend for chemicals acting as estrogen agonists and with estrogen antagonists acting
+to block such estrogen effects. It is expected that the uterus gets heavier with the increase of estrogen agonist dose.
+
+The basic design randomizes female rats to treatment groups, with groups consisting of a control group and several groups having increasing doses of the test agent. An international multilaboratory study was conducted to compare the results of the rat uterotrophic bioassay using a known estrogen agonist (EE) and a known estrogen antagonist (ZM). The main goal of the study was to assess whether the results were consistent across the laboratories.
+Variables
+Protocol:
+A = immature female rats dosed by oral gavage (3 days)
+B = immature female rats dosed by injection (3 days)
+C = adult ovariectomized female rats dosed by injection (3 days)
+D = adult ovariectomized female rats dosed by injection (7 days)
+Uterus Uterus weight (mg)
+Weight Body weight of rat (g)
+EE Dose of estrogen agonist, EE in mg/kg/day
+ZM Dose of estrogen antagonist, ZM in mg/kg/day
+Lab Laboratory at which assay was conducted
+Group Lab replicate group (6 rats were used per group)
+
+Questions:
+(a) Select an appropriate model for the data and justify your choice.
+(b) Is the uterotrophic bioassay successful at identifying estrogenic effects of EE and anti-estrogenic effects of ZM? Do some labs fail to detect such effects? At what dose level of EE is there a change relative to the control and does this level vary across labs?
+(c) Does the dose response vary across labs? If so, are there certain labs that are outliers?
+(d) Do the protocols differ in their sensitivity to detecting estrogenic and anti-estrogenic
+effects? If so, is there one protocol that can be recommended
+
+File (first 6 lines)
+protocol uterus weight EE ZM lab group
+A 21 61.9 0 0 Basf 1
+A 22 55.9 0 0 Basf 1
+A 21 59.1 0 0 Basf 1
+A 26 54.8 0 0 Basf 1
+A 24 57.5 0 0 Basf 1
