@@ -76,9 +76,10 @@ for(i in 1:length(unique(spring$SITEI))){
 model.hier = function(){
   for(i in 1:n){
     Y[i] ~ dpois(mu[i])
-    log(mu[i]) <- alpha[year[i]] + delta[siteid[i]] + beta0 + beta1 * date[i] + beta2 * hour[i]
+    log(mu[i]) <- alpha[year[i]] + delta[siteid[i]]  + beta1 * date[i] + beta2 * hour[i]
   }
   for(j in 1:aN){
+<<<<<<< HEAD
     alpha[j] ~ dnorm(0, inv.tau2) #YEAR
   }
   for(k in 1:dN){
@@ -120,11 +121,24 @@ model.hier = function(){
   }
   # Priors for Year
   A ~ dnorm(0,.0001)
+=======
+    alpha[j] ~ dnorm(alpha.0, inv.tau2) #YEAR
+  }
+  for(k in 1:dN){
+    delta[k] ~ dnorm(delta.0, inv.phi2) #SITEID
+  }
+  # Priors for Year
+  alpha.0 ~ dnorm(0,.0001)
+>>>>>>> 75a6b3eb953dc2d09a88d42aa01eda070913ff68
   inv.tau2 ~ dgamma(0.001,.001)
   tau2 <- 1 / inv.tau2
   
   # Priors for SITEID
+<<<<<<< HEAD
   D ~ dnorm(0,.0001)
+=======
+  delta.0 ~ dnorm(0,.0001)
+>>>>>>> 75a6b3eb953dc2d09a88d42aa01eda070913ff68
   inv.phi2 ~ dgamma(.001,.001)
   phi2 <- 1 / inv.phi2
   
@@ -139,6 +153,7 @@ model.hier = function(){
 
 data.jags = list(Y = spring$COUNTS, n = nrow(spring), year = spring$YEAR - 1989,
                  siteid = spring$SITEI, date = spring$DATE, hour = spring$HourFromNoon,
+<<<<<<< HEAD
                  aN = length(unique(spring$YEAR)), dN = length(unique(spring$SITEI)))
 
 parameters = c("alpha","delta","beta1","beta2","tau2","phi2","A","D","beta0")
@@ -319,3 +334,22 @@ quantile(out.int.mat[,"alpha.mu"] ,c(.025,.975))
 quantile(output.mat[,"alpha.mu"], c(.025,.975))
 quantile(out.int.mat[,"beta.mu"], c(.025,.975))
 quantile(output.mat[,"beta.mu"] , c(.025,.975))
+=======
+                 dN = length(unique(spring$SITEI)), aN = length(unique(spring$YEAR)))
+
+parameters = c("alpha1","alpha2","alpha3","alpha4","alpha5","alpha6","alpha7","alpha8",
+               "alpha9","alpha10","alpha11","alpha12","alpha13","delta1","delta2","delta3"
+               ,"delta4","delta5","delta6","delta7","delta8","delta9","delta10","delta11"
+               ,"delta12","beta1","beta2","tau2","phi2")
+
+jags.res = jags(model = model.hier, data = data.jags, n.chains = 1,
+                n.iter = 10000, n.burnin = 2000, inits = NULL,
+                par = parameters)
+
+hier.bugs=  as.mcmc(jags.res$BUGSoutput$sims.matrix)
+
+bf.bugs = as.mcmc(bf.sim$BUGSoutput$sims.matrix)  # create an MCMC object 
+
+plot(bf.sim)
+summary(bf.sim)
+>>>>>>> 75a6b3eb953dc2d09a88d42aa01eda070913ff68
