@@ -121,7 +121,7 @@ model.hier = function(){
   }
   # Priors for Year
   A ~ dnorm(0,.0001)
-=======
+#=======
     alpha[j] ~ dnorm(alpha.0, inv.tau2) #YEAR
   }
   for(k in 1:dN){
@@ -129,16 +129,16 @@ model.hier = function(){
   }
   # Priors for Year
   alpha.0 ~ dnorm(0,.0001)
->>>>>>> 75a6b3eb953dc2d09a88d42aa01eda070913ff68
+#>>>>>>> 75a6b3eb953dc2d09a88d42aa01eda070913ff68
   inv.tau2 ~ dgamma(0.001,.001)
   tau2 <- 1 / inv.tau2
   
   # Priors for SITEID
-<<<<<<< HEAD
+#<<<<<<< HEAD
   D ~ dnorm(0,.0001)
-=======
+#=======
   delta.0 ~ dnorm(0,.0001)
->>>>>>> 75a6b3eb953dc2d09a88d42aa01eda070913ff68
+#>>>>>>> 75a6b3eb953dc2d09a88d42aa01eda070913ff68
   inv.phi2 ~ dgamma(.001,.001)
   phi2 <- 1 / inv.phi2
   
@@ -153,7 +153,7 @@ model.hier = function(){
 
 data.jags = list(Y = spring$COUNTS, n = nrow(spring), year = spring$YEAR - 1989,
                  siteid = spring$SITEI, date = spring$DATE, hour = spring$HourFromNoon,
-<<<<<<< HEAD
+#<<<<<<< HEAD
                  aN = length(unique(spring$YEAR)), dN = length(unique(spring$SITEI)))
 
 parameters = c("alpha","delta","beta1","beta2","tau2","phi2","A","D","beta0")
@@ -334,7 +334,7 @@ quantile(out.int.mat[,"alpha.mu"] ,c(.025,.975))
 quantile(output.mat[,"alpha.mu"], c(.025,.975))
 quantile(out.int.mat[,"beta.mu"], c(.025,.975))
 quantile(output.mat[,"beta.mu"] , c(.025,.975))
-=======
+#=======
                  dN = length(unique(spring$SITEI)), aN = length(unique(spring$YEAR)))
 
 parameters = c("alpha1","alpha2","alpha3","alpha4","alpha5","alpha6","alpha7","alpha8",
@@ -352,4 +352,4 @@ bf.bugs = as.mcmc(bf.sim$BUGSoutput$sims.matrix)  # create an MCMC object
 
 plot(bf.sim)
 summary(bf.sim)
->>>>>>> 75a6b3eb953dc2d09a88d42aa01eda070913ff68
+#>>>>>>> 75a6b3eb953dc2d09a88d42aa01eda070913ff68

@@ -1,0 +1,42 @@
+model
+{
+    for (i in 1:N) {
+        Y[i] ~ dnorm(mu[i], phi)
+        mu[i] <- int + alpha[labnum[i]] + gamma[protocol[i]] + 
+            beta1 * weight[i] + beta2[EE[i]] + beta3[ZM[i]] + 
+            beta4 * group[i]
+    }
+    alpha[1] <- 0.00000E+00
+    gamma[1] <- 0.00000E+00
+    beta2[1] <- 0.00000E+00
+    beta3[1] <- 0.00000E+00
+    for (j in 2:aN) {
+        alpha[j] ~ dnorm(alpha.mu, alpha.phi)
+    }
+    for (k in 2:gN) {
+        gamma[k] ~ dnorm(gamma.mu, gamma.phi)
+    }
+    for (l in 2:b2N) {
+        beta2[l] ~ dnorm(beta2.mu, beta2.phi)
+    }
+    for (m in 2:b3N) {
+        beta3[m] ~ dnorm(beta3.mu, beta3.phi)
+    }
+    phi ~ dgamma(1.00000E-05, 1.00000E-05)
+    sigma2 <- 1/(phi * phi)
+    alpha.mu ~ dnorm(0.00000E+00, 1.00000E-05)
+    alpha.phi ~ dgamma(1.00000E-05, 1.00000E-05)
+    sigma2.alpha <- 1/alpha.phi
+    gamma.mu ~ dnorm(0.00000E+00, 1.00000E-05)
+    gamma.phi ~ dgamma(1.00000E-05, 1.00000E-05)
+    sigma2.gamma <- 1/gamma.phi
+    beta2.mu ~ dnorm(0.00000E+00, 1.00000E-05)
+    beta2.phi ~ dgamma(1.00000E-05, 1.00000E-05)
+    sigma2.beta2 <- 1/beta2.phi
+    beta3.mu ~ dnorm(0.00000E+00, 1.00000E-05)
+    beta3.phi ~ dgamma(1.00000E-05, 1.00000E-05)
+    sigma2.beta3 <- 1/beta3.phi
+    int ~ dnorm(0.00000E+00, 1.00000E-05)
+    beta1 ~ dnorm(0.00000E+00, 1.00000E-05)
+    beta4 ~ dnorm(0.00000E+00, 1.00000E-05)
+}

@@ -1,0 +1,30 @@
+model
+{
+    for (i in 1:N) {
+        Y[i] ~ dnorm(mu[i], phi)
+        mu[i] <- int + alpha[labnum[i]] + gamma[protocol[i]] + 
+            beta_EE[labnum[i]] * EE[i] + beta_ZM[labnum[i]] * 
+            ZM[i]
+    }
+    alpha[1] <- 0.00000E+00
+    gamma[1] <- 0.00000E+00
+    beta_EE[1] <- 0.00000E+00
+    beta_ZM[1] <- 0.00000E+00
+    for (j in 2:aN) {
+        alpha[j] ~ dnorm(alpha.mu, alpha.phi)
+        beta_EE[j] ~ dnorm(0.00000E+00, 1.00000E-05)
+        beta_ZM[j] ~ dnorm(0.00000E+00, 1.00000E-05)
+    }
+    for (k in 2:gN) {
+        gamma[k] ~ dnorm(gamma.mu, gamma.phi)
+    }
+    phi ~ dgamma(1.00000E-05, 1.00000E-05)
+    sigma2 <- 1/(phi * phi)
+    alpha.mu ~ dnorm(0.00000E+00, 1.00000E-05)
+    alpha.phi ~ dgamma(1.00000E-05, 1.00000E-05)
+    sigma2.alpha <- 1/alpha.phi
+    gamma.mu ~ dnorm(0.00000E+00, 1.00000E-05)
+    gamma.phi ~ dgamma(1.00000E-05, 1.00000E-05)
+    sigma2.gamma <- 1/gamma.phi
+    int ~ dnorm(0.00000E+00, 1.00000E-05)
+}
