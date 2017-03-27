@@ -71,3 +71,14 @@ Hierarchical Model with missingness by the bank
 Use some sensitivity analysis
 
 In the actual analysis a log transformation is probably appropriate
+
+
+
+################################################################
+Notes from the literature
+###############################################################
+http://www.stefvanbuuren.nl/mi/docs/mnar.pdf
+The missing indicator and the covariates/response must be modelled jointly
+
+Two general approaches: Selection Models, Pattern Mixture Models
+SELECTION MODEL
