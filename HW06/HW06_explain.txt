@@ -1,0 +1,107 @@
+Tree growth provides essential information about forest ecology. One common method to estimate tree growth is based on repeated tape measurements of the diameter of the same tree, and the diameter increment is the difference between the current and previous measurement.
+
+The dataset diamdata.txt (attached) contains diameter measurement data for a large number of trees obtained from a mapped stand in Coweeta Hydrologic Laboratory. The stand was established in 1991 for the purpose of studying forest dynamics. The measurements are made at breast height marked by a nail that holds a tag indicating the identifying tree number. Diameter censuses were conducted at intervals of one to four years starting in 1993. Each year, some trees died and were removed from the census, and some new trees were planted and added to the census, resulting in different numbers of trees measured in each census and different numbers of measurements for each tree. Each tree is indexed by a unique ID ("ID"), and the diameter of a given year ("year") is the variable "cm". For each year, three variables of weather information are also available: annual precipitation ("annualprec"), average summer (Jun. - Sep.) Palmer Drought Severity Index (PDSI) ("summerpdsi"), and average winter (Jan. - Mar.) temperature ("wintertemp").
+
+Explore and analyze the data to infer the pattern of tree growth.  In this regard, we may be interested in learning about both stand (population) level growth and individual level growth. Explore using both hierachical models and generalized estimating equations (GEE), comment on suitability, and pros and cons of each method in this study. Write a report regarding tree growth based on your analysis that is understandable and useful to ecologists. Details of key statistical methods or models should be given.
+
+P.S. Do not search online this data - I have a paper with Alan on this data. 
+
+#############################################################
+Hierarchical models vs. GEE
+
+http://stats.stackexchange.com/questions/16390/when-to-use-generalized-estimating-equations-vs-mixed-effects-models
+
+Use GEE when you're interested in uncovering the population average effect of a covariate vs. the individual specific effect.
+
+For example, if nu doesn't equal mu and sigma2=1sigma2=1, then nu=approx.83. Although the random effects have mean zero on the transformed (or linked) scale, their effect is not mean zero on the original scale of the data. Try simulating some data from a mixed effects logistic regression model and comparing the population level average with the inverse-logit of the intercept and you will see that they are not equal, as in this example.  This difference in the interpretation of the coefficients is the fundamental difference between GEE and random effects models0.
+
+CONDITIONAL vs. MARGINAL.
+https://www.quora.com/Under-what-conditions-should-we-use-GEE-and-generalized-linear-mixed-model-respectively
+Coefficients in GEE are marginal effects ie the effects average across all subjects
+Coefficients are conditional effects = Conditional on the source of intra=class correlation - ie. the effect for a particular subject
+
+http://stats.stackexchange.com/questions/17331/what-is-the-difference-between-generalized-estimating-equations-and-glmm
+Target of inference
+Population average
+Subject specific
+GEE = all about population averages = conditional only on fixed design matrix
+
+http://andrewgelman.com/2006/12/27/generalized_est/
+GEE focus on estimating a nonvarying coefficient
+HIerarchical/Multilevel focus on etsimating the aspects of model that differ by group
+
+http://www.iscb2015.info/documenten/documents/presentations/C46.2.pdf
+GEE or not GEE?
+Depends on the researcher's query: population averaged or cluster specific effect
+What are the mssing patterns, the number of clusters as well as the data distribution assumptions - as all relate to the unbiased estimators of SE?
+Averaging over the random effects
+
+file:///C:/Users/Zachary/Downloads/GEEvsMixedHubbardetal2010.pdf
+file:///C:/Users/Zachary/Downloads/GEEvsMixedHubbardetal2010.pdf
+Hierarchical model = What if th model is wrong?  You're in trouble.  Especially with the fixed effects.  It changes things.
+ Since the latent, random-effects distribution is nonidentifiable, larger sample sizes do not help
+Hierarchical model = IDea that heterogeneity exists
+GEE = population averages while controlling for the other stuff
+Does not require distributionalassumptions because estimation depends only on correctly specificying a few aspects of the observed data generating distribution
+GEE and linear models depart in the case of deriving the inference for what might be equivalent parameter estimates of beta
+MLE inference not available
+We can only use robust or sandwich inference
+GEE = neighborhoods have to be sufficiently large
+Paramter inerpretation
+
+
+
+#############################################################################
+ GEE:  GENERALIZED LINEAR MODELS FOR DEPENDENT DATA
+ gee S-function, version 4.13 modified 98/01/27 (1998) 
+
+Model:
+ Link:                      Identity 
+ Variance to Mean Relation: Gaussian 
+ Correlation Structure:     Independent 
+
+Call:
+gee(formula = cm ~ yr + annualprec + summerpdsi + wintertemp, 
+    id = ID, data = tree, corstr = "independence")
+
+Summary of Residuals:
+       Min         1Q     Median         3Q        Max 
+-14.272119 -10.889324  -7.235079   6.738190  75.359785 
+
+
+Coefficients:
+              Estimate Naive S.E.    Naive z Robust S.E.  Robust z
+(Intercept)  9.7515643 5.40516247  1.8041205  1.11821713  8.720636
+yr          -0.1620431 0.06685729 -2.4237169  0.03920664 -4.133054
+annualprec   3.3996441 3.24518871  1.0475952  0.63672022  5.339306
+summerpdsi  -0.8434297 0.96871323 -0.8706701  0.20165490 -4.182540
+wintertemp  -0.2943877 0.26430669 -1.1138108  0.09298863 -3.165846
+
+Estimated Scale Parameter:  236.6072
+Number of Iterations:  1
+
+Working Correlation
+      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
+ [1,]    1    0    0    0    0    0    0    0    0
+ [2,]    0    1    0    0    0    0    0    0    0
+ [3,]    0    0    1    0    0    0    0    0    0
+ [4,]    0    0    0    1    0    0    0    0    0
+ [5,]    0    0    0    0    1    0    0    0    0
+ [6,]    0    0    0    0    0    1    0    0    0
+ [7,]    0    0    0    0    0    0    1    0    0
+ [8,]    0    0    0    0    0    0    0    1    0
+ [9,]    0    0    0    0    0    0    0    0    1
+
+###########################################################################
+February 28, 2017
+The model is probably too simplistic.
+Change the hierarchical model= Supposed to be creative
+Specify the model.
+
+The model should be the same over both.
+What about interactions?
+Other possibile random effects?
+What about the ratio?  I'm not sure what she meant
+Look at a gamma error distribution?
+Just get creative on the hierarchy.
+Use ratio or difference?

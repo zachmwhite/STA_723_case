@@ -1,0 +1,286 @@
+This is an individual assignment. This assignment has two components (the dataset are only slightly different, in fact the outcome variable of component 1 is created from component 2):
+
+Component 1: Work on the take home problem of FYE 2013. It is important to understand the goal of this particular problem (prediction or estimation), which will dictate the methods used.
+
+https://stat.duke.edu/sites/stat.duke.edu/files/images/FYE13.pdf
+
+Right Heart Catheterization (RHC) is a procedure for directly measuring how well the heart is pumping blood to the lungs. RHC is often applied to critically ill patients for directing immediate and subsequent treatment. However, administering RHC may cause serious complications, though the risks are usually small. There is some debate whether the use of RHC actually leads to improved treatment.
+
+The data set “rhc_study” (more information below) contains data on 3824 hospitalized adult patients at five medical centers in the U.S. The variable rhc (column 1) indicates whether RHC was applied within 24 hours of admission (TRUE/FALSE). Each patient was followed up with some treatment procedures that may have been influenced by the RHC result if it was performed on the patient. The outcome variable is surv30 (column 54) which is a prognosis score describing the probability of survival at 30 days after completion of treatment. The prognosis score derivation is a standardized procedure and is calculated by following the same protocol for all patients at all centers. Based on information from a panel of experts, a set of 52 variables were identified that are potentially related to both the decision to use RHC and the outcome surv30.
+
+An accompanying data set “rhc_new” contains information on 1911 “new” patients admitted to the same five centers for serious health complications similar to the patients in rhc_study. These new patients are to be treated upon, with or without RHC being used to determine the choice of treatment. The data set rhc_new has the same 54 columns as rhc_study, but its column 1 and column 54 contain only NA’s.
+
+Present a three page (maximum) report addressing the question: Should RHC be performed to assist treatment choices for new patients in order to maximize their individual prognosis scores? Your report should discuss all relevant aspects of your analysis (exploratory, modeling and validation) with graphical and numerical summaries that are important for communicating results. The report should be written so that doctors could understand and apply the findings while making RHC recommendation for future care. While you may include code and other plots in the supplemental appendix, you should not assume that graders will read beyond the main report; all relevant material should be within the three page limit.
+
+You can access the two data sets in either tab delimited format (readable to R) or comma delimited ‘csv’ format (readable to Excel and R) from http://www.stat.duke.edu/~st118/fye13/takehome/. Details on all 54 variables are given on the next page.
+
+http://www.stat.duke.edu/~st118/fye13/takehome/
+
+Key points:
+rhs_study.txt = Training set?
+rhs_new.txt = Test set?
+
+################################################################################
+
+Component 2: Work on the original dataset of the RHC data (5735 subjects total, with binary outcome (death at 30 days)) to answer the question: What is the average treatment effect of RHC for the treated group?  The dataset is attached.
+
+Is this the atached data set?
+rhs_study.txt 
+
+################################################################################
+A combined 4-page (max) report is due on March 26 (Sun).
+
+################################################################################
+Component 1 thoughts
+Should RHC be performed to assist treatment choices for new patients in order to maximize their individual prognosis scores?
+
+I'm still not sure how to do this.  There are two variables of interest here: prognosis score and rhc?
+
+Basically, we want to see if the treatment is effective.
+Possibility: Overall regression model.  Significant in prognosis score?  Yes.  Doing it like this, we are controlling for th other variables in a sense.  This seems too simplistic. 
+Another possibility: Some propensity score to compare them.
+Am I supposed to try to predict the new ones?  We don't have those values. 
+
+Maybe try something bayesian.  What variables seem most important?  
+Do Bayesian Variable selection.
+Start with some normal variable selection?
+Is this really acomplishing it
+
+#################################################################################
+Component 2 thoughts
+This is a causal problem.  Currently, I don't know how to do causal stuff, but I can look that up and try to figure it out.
+
+Average treatment effect of RHCfor the treated group.  Work this out.  Find propensity scores and do stuff like that?  How to do that?
+The propensity scores are good.  I should have more now.
+
+#################################################################################
+PROGRESS
+
+WHAT I DID
+Propensity score for both
+Predict whether or not RHC was used
+Match the groups.
+Plots comparing thegroups.
+Use a t-test to compare the groups
+SHould be pretty straighforward.
+
+OTHER THOUGHTS
+We know that under the simple linear regression model, it's significant, but that doesn't answer our question
+Maybe ad some hieachy or a bayesian thing to compare.  Maybe with some hierarchy we could do it then?
+I'm not sure about this part.
+
+March 17, 2017
+9-11
+PART 2
+Start with the first part.
+For both parts, look at the model validation part
+The models might be too complex.  Maybe take away some variables?
+Should I fit another regression model?
+I use neural networks?  Should I try a different model?  Would that impact it?
+1-3
+Figure out if what I'm doing is too complex.
+Are propensity scores valid?  It does seem valid.
+Average effect size?  This shouldn't be too bad.
+PLOTS:
+Propensity scores
+model validation plots
+Another regression model?
+Exploratory plots
+
+########################################################################
+(Intercept)         raceother         racewhite 
+                1                 5                 6 
+              edu    income$25-$50k      income> $50k 
+                7                 8                 9 
+          cat1CHF cat1MOSF w/Sepsis  cat2Colon Cancer 
+               16                23                24 
+  cat2Lung Cancer           cardYes          renalYes 
+               26                31                34 
+          sepsYes         traumaYes           wtkilo1 
+               37                38                47 
+          meanbp1             resp1               ph1 
+               49                50                54 
+            wblc1             hema1              sod1 
+               55                56                57 
+             pot1             crea1      cardiohxTRUE 
+               58                59                62 
+        chfhxTRUE      chrpulhxTRUE       liverhxTRUE 
+               63                66                68 
+     gibledhxTRUE       malighxTRUE           wt0TRUE 
+               69                70                74 
+
+##########################################################################
+Propensity scores
+> which(summary(prop.model)$coefficients[,4] > .05)
+                  age               sexMale             raceother 
+                    2                     3                     4 
+            racewhite                   edu        income$25-$50k 
+                    5                     6                     7 
+         income> $50k      incomeUnder $11k      ninsclasMedicare 
+                    8                     9                    10 
+     cat1Colon Cancer       cat1Lung Cancer      cat2Colon Cancer 
+                   17                    20                    23 
+             cat2Coma       cat2Lung Cancer cat2MOSF w/Malignancy 
+                   24                    25                    26 
+             cat2None               respYes              gastrYes 
+                   28                    29                    32 
+             renalYes               metaYes              orthoYes 
+                   33                    34                    38 
+             das2d3pc                  caNo                 caYes 
+                   39                    41                    42 
+                 aps1                 temp1                 wblc1 
+                   44                    47                    54 
+                hema1                  sod1                 crea1 
+                   55                    56                    58 
+                bili1          cardiohxTRUE             chfhxTRUE 
+                   59                    61                    62 
+         dementhxTRUE          chrpulhxTRUE           renalhxTRUE 
+                   63                    65                    66 
+          liverhxTRUE          gibledhxTRUE           malighxTRUE 
+                   67                    68                    69 
+          immunhxTRUE             amihxTRUE 
+                   70                    72 
+##################################################################
+Complete data for causal part
+> which(summary(caus.simp.mod)$coefficients[,4] > .05)
+              sexMale             raceother             racewhite 
+                    3                     4                     5 
+       income$25-$50k          income> $50k      incomeUnder $11k 
+                    7                     8                     9 
+     ninsclasMedicare      cat1Colon Cancer       cat1Lung Cancer 
+                   10                    17                    20 
+     cat2Colon Cancer              cat2Coma       cat2Lung Cancer 
+                   23                    24                    25 
+cat2MOSF w/Malignancy              cat2None              renalYes 
+                   26                    28                    33 
+              metaYes               sepsYes              orthoYes 
+                   34                    36                    38 
+             das2d3pc                  caNo                 caYes 
+                   39                    41                    42 
+                 aps1                 temp1                 wblc1 
+                   44                    47                    54 
+                bili1          cardiohxTRUE             chfhxTRUE 
+                   59                    61                    62 
+         chrpulhxTRUE           renalhxTRUE           liverhxTRUE 
+                   65                    66                    67 
+         gibledhxTRUE           malighxTRUE           immunhxTRUE 
+                   68                    69                    70 
+            amihxTRUE 
+                   72 
+##################################################################
+For the first 1
+Use matching
+Something to compensate for bias
+Then use that model for the unobserved.
+So we need to match the unobserved with the observed?
+I'm trying to figure that out.
+
+March 21, 2017
+Listen to the presentations and figure out what is going on
+What do I need to change?
+Work on the unobserved
+Find a way to compare that
+
+Is the first part ATE? Average Treatment Effect
+and the second is ATT? Average Treatment Effect on treated
+###########################################################################
+FROM CLASS, FROM FAN
+With prediction. Use interactions? Each patient.  Heterogeneity across patients
+Linear Model doesn't address a lot.
+Interactions with treatment and other covariates
+The main goal is the individual prediction =
+We are assuming one model without any interactions.  We assume every person follows that main curve.  Really strong curve?
+Subgroup detection.  Subclassification.  Treatment effect is higher.
+We need individual prediction.  WHAT ABOUT UNCERTAINTY?
+We need to be worried about the uncertainty.  It is really important
+Heterogenity.  Uncertainty.  Outlier Detection.
+
+COMPONENT 2
+The assumptions for the Rubin Causal Model = The assumptions are reasonable
+We do want the ATT
+Do al of the variables = Super ad-hoc
+Propensity Score = mehalonobis
+Matching is intractable.
+MatchIt = We are using propensity score matching.
+Using Matching package
+Do I need to do some weighting?  Go to her slides
+USE THE CONFIDENCE INTERVALS
+
+The matching is unreliable.  Bootstrap the variance to find the confidence interval
+
+FOR MY STUFF
+Better histograms in the beginning
+use logit transformation on the probability
+Shai uses BART, which helped with the heterogeneity.
+If we use a Bayesian approach, a lot of the predicted will have a difference of zero on average, ut there will be subgroups where it is not.  THE SUBGROUPS ARE IMORTANT
+Basic logistic regression.  Propensity score model.  Logistic Regression.  All the effects
+5.9% sanity check.  I should certainly review this.
+Also use the mean squared error
+JIALIANG
+Use the logit
+Bayesian Model Averaging
+Merlise's Package
+Posteriors for it all.  without interactions.  Negative effect
+Bayesian for uncertainty
+He compared lasso and BMA
+Take into account the interactions
+We would use Bayesian Non-parametrcs with the interactions, but that seems crazy to me.
+For 252 of the 1911 leads to improved treatment.  How did they do this?  I need to figure that out.
+
+Component 2
+Use the logistic with all the covariates
+Balance check with the tengroups.  t-tests and ANOVA.
+My numbers are totally wrong.  -0.0593 = ATE
+-0.0581 ATT
+Bootstrap for confidence intervals
+For balance.  Each variable standardized difference.
+
+KELLY
+First 1.  Maybe don't use propensity score.  We are missing a lot of the data
+Component 1 = the key is heterogeneity.  So throwing away is not good.
+Prdouce prediction.  Uncertainty measurement will tell whether it's serious.
+In the first component is purely predictive.
+Creative = t-tests of the covariates
+Most important.  Individual predictions.
+I'm confused on whether or not they improve.  I need to work on that.
+
+Component 2
+Same thing with propensity scores
+
+ISAAC
+Component 1
+Balance doesn't matter
+Think about MSE
+What does a Bayesian approach bring to causal inference.  Do something Bayesian.  Individual prediction with uncertainty quantification
+Positive effect or not?  I'm really shaky on this prediction problem in the first part
+
+Propensity score
+Put that unbalanced covariate back into the value.
+
+#################################################################
+PLAN FOR MARCH 22
+Logit transform
+look for outliers
+Plot of transform
+Marginal Exploratory plots
+Tables with differences
+Fit OLS with all the terms
+Maybe do some variable selection
+Interaction with treatment
+Basically we do double prediction almost, but we designate the value for treatment
+We use mse.  Can we do predicted mean squared error? No
+Take difference betwen treatment and control predictions.  Look at the histogram.
+Try to analyze and look for subclasses
+THIS IS ALL ABOUT PREDICTION
+
+COMPONENT TWO
+Propensity Score
+Look at her slides!!!!!
+Look at balance.
+t-tests.
+I need to reverse the response.  The values should be negative.
+Figure out the interactions or just the overall model
+Anova
+Matching package
+Bootstrap for the variance?  I'm not even sure how to do this, but we should report the confidence intervals.
+I need to look at this stuff

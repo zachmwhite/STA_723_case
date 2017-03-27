@@ -1,0 +1,73 @@
+The goal of this project is to evaluate the effects of the European
+Central Bank's (ECB) Corporate Sector Purchase Programme (CSPP) on
+firms' yields. The program has been conceived to help the financing
+of European firms: Since the 2016 spring, ECB purchases all the
+bonds issued by those firms with the Standard and Poor's credit
+rating being above a threshold (BBB-). This allows firms to have
+the possibility to be easily financed by a reliable investor such
+as a central bank.
+
+Here is a provisional dataset, where the key variables are:
+
+ISIN: first two letter of the ISIN code of a firm. XS means international firms, others are single country firms.
+        Normally there are less missing data for international firms.
+Spread: the outcome
+IG: the binary treatment (1: treated, i.e. ECB purchase; 0: control)
+Effective.Rating..Launch: the Standard and Poor's credit rating, which determines the treatment variable
+INTEXP.DEBTL: the ratio between INTEXP and DEBT, which from the economic point of view is the most predictive covariate
+999999: missing data
+Deal.Value.Euro..Face: the amount of money involved; the total is about 400 billions Euros
+
+The following are pre-treatment variables (covariates):
+
+TA2015: Total Assets. The final amount of all gross investments, cash and equivalents, receivables, and other assets
+        Read more: http://www.businessdictionary.com/definition/total-assets.html
+EBIT2015: earnings before interest and taxes
+COMEQY2015: common equity (it is a definition of equity which only takes into account the common stockholders, and
+            disregards the preferred stockholders)
+LIAB2015: Liabilities.
+REVEN2015: Revenues
+INTEXP2015: Interest expenditure
+DEBT2015: Total debts
+NI2015: Net Income (net income is calculated by taking revenues and subtracting the costs of
+        doing business such as depreciation, interest, taxes and other expenses)
+CURRPORLTDEBT2015: current portion of long term debt (the total amount of long-term debt that
+                     must be paid within the current year)
+CASHFROMOPER2015: cash
+LTDEBT2015: Long term debts
+
+At least two issues need to be addressed. 
+1. The first week we focus on: how to deal with the large proportion of missing data? For example, if you are thinking of multiple imputation, is the missing at random (MAR) assumption plausible? If you think so, why? If not, how do you address it?  Also how do you evaluate the quality of your imputation?
+2. For the second week we  focus on: how to evaluate the effects of the CSPP?
+
+################################################################################
+March 26
+Tidbits from EDA
+####
+Information for the individual banks
+61% of the missing data comes from the bank XS
+Doesn't seem random
+90% of the missing data comes from three banks XS, FR, DE
+Bank AT doesn't have any missing data
+###
+INDIVIDUAL VARIABLES
+Variables with no missing data
+ISIN, Issuer.Nationality.of.Operations, INvestiment.Grade, Callable..Y.N., Float..Y.N., Parent.Speicific.Indeustry.Group..SIG, Years.to.Maturity, Subordinated.Debt..Y.N, IG Effective.Rating.Lunch
+There is less domination in the variables, and they're generally around .06-.08 
+
+The packages won't work because it says that there are two columns that are identical and so they aren't working
+Investment.Grade..Y.N. and IG have the same rank ordering
+
+NOTE: The following pairs of variables appear to have the same missingness pattern.
+ Please verify whether they are in fact logically distinct variables.
+     [,1]       [,2]      
+[1,] "TA2015"   "LIAB2015"
+[2,] "TA2015"   "NI2015"  
+[3,] "LIAB2015" "NI2015"
+
+##############################
+What we can do is assume a multivariate normal for all the responses that aren't categorical
+Hierarchical Model with missingness by the bank
+Use some sensitivity analysis
+
+In the actual analysis a log transformation is probably appropriate

@@ -1,0 +1,86 @@
+library(R2jags)
+library(R2WinBUGS)
+library(glmnet)
+library(xlsx)
+library(mice)
+library(mi)
+#############################################################
+ecb.data = read.xlsx2("C:/Users/Zachary/Desktop/Winter 2017/STA 723 Case Studies/STA_723_case/HW08/RDD_causestudies1.xlsx",
+                      sheetIndex = 1, startRow = 1, header = TRUE, as.data.frame = TRUE)
+
+#############################################################
+dim(ecb.data)
+apply(ecb.data == -999999,2,sum)
+apply(ecb.data == -999999,2,mean) 
+mean(ecb.data == -999999)
+
+z.mis = ecb.data == -999999
+test.matrix = matrix(NA,nrow = 27, ncol = 9)
+colnames(test.matrix) = levels(ecb.data$ISIN)
+rownames(test.matrix) = names(ecb.data)
+levels.isin = levels(ecb.data$ISIN)
+
+
+for(i in 1:27){
+  test = which(z.mis[,i] == TRUE)
+  levels.test = ecb.data[test,1]
+  test.matrix[i,] = table(levels.test)
+}
+
+apply(test.matrix,2,sum) / sum(test.matrix)
+
+#### Indivual variables
+var.sum = apply(test.matrix,1,sum)
+var.sum / sum(var.sum)
+which(var.sum == 0)
+
+ecb.test.data = ecb.data
+ecb.test.data[ecb.test.data == -999999] = NA
+test = mice(ecb.test.data)
+
+test$method
+
+test$predictorMatrix
+
+################################################
+# MI package
+install.packages("mi")
+
+missing.pattern.plot()
+# Missing pattern plots
+mp.plot(ecb.test.data)
+
+mp.plot(ecb.test.data, y.order = TRUE, x.order = TRUE, clustered = TRUE)
+
+# Structural problems
+mi.info(ecb.test.dat)
+
+# preprocess
+ecb.new = mi.preprocess(ecb.test.data)
+
+# Info
+info = mi.info(ecb.test.data)
+# chaning non-negative to continuous
+info.upd = update(info, "type", list("var" = "continuous"))
+# Formulas for the imputation
+info$imp.formula
+# Change formula
+inf.upd = update(info,"imp.formula", list("var" = "var ~ cov1 + cov2 + ... covp"))
+##########################
+# Actual imputations and properties
+ecb.new = mi.preprocess(ecb.test.data)
+imp = mi(ecb.new)
+par(mfrow = c(1,3))
+plot(imp)
+
+# Imputatation chains.  Check convergence
+chains = as.bugs.array(imp$mcmc) # it actually says imp@mcmc
+
+# run more
+imp = mi(imp, run.past.convergence = TRUE, n.iter = 10)
+
+# Completed datasets
+imp.dat.all = mi.completed(imp) # Datasets for all the iterations.  One list
+imp.dat = mi.data.frame(imp, m = 1)
+
+# We can then pool the complete case

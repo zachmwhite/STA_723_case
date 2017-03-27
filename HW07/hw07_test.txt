@@ -1,0 +1,104 @@
+library(R2jags)
+library(R2WinBUGS)
+library(glmnet)
+library(vcd)
+library(MatchIt)
+library(Zelig)
+library(leaps)
+library(ATE)
+library(Matching)
+library(ggplot2)
+library(BayesTree)
+library(randomForest)
+###########################################################
+# Causal part
+rhs = read.table("C:/Users/Zachary/Desktop/Winter 2017/STA 723 Case Studies/STA_723_case/HW07/rhc.txt", 
+                 header = TRUE)
+rhs_new = read.table("C:/Users/Zachary/Desktop/Winter 2017/STA 723 Case Studies/STA_723_case/HW07/rhc_new.txt", 
+                     header = TRUE)
+rhs_study =read.table("C:/Users/Zachary/Desktop/Winter 2017/STA 723 Case Studies/STA_723_case/HW07/rhc_study.txt", 
+                      header = TRUE)
+
+rhs_study$surv30.logit = log(rhs_study$surv30 / (1 - rhs_study$surv30) )
+par(mar = c(1.8,1.8,1.3,1.3))
+#HIstogram of logit(response)
+hist(rhs_study$surv30.logit, breaks = 50)
+# Outlier detection
+summary(rhs_study$surv30.logit)
+outlier.index = which.max(rhs_study$surv30.logit)
+rhs_study = rhs_study[-outlier.index,]
+# Finalized Histogram
+hist(rhs_study$surv30.logit, breaks = 50, main = "Hist. log(surv30)", freq = FALSE)
+lines(density(rhs_study$surv30.logit))
+
+test.gg = ggplot(rhs_study, aes(x = rhc, y = surv30.logit))
+test.gg + geom_boxplot()
+boxplot(rhs_study$surv30.logit~rhs_study$rhc, main = "logit(surv30) by RHC")
+
+density.gg = ggplot(rhs_study, aes(x = surv30.logit, color = rhc))
+density.gg + geom_density()
+#####################################################################
+# Basic OLS
+## Calculate MSE
+surv30.index = which(colnames(rhs_study) == "surv30")
+rhs_study = rhs_study[,-surv30.index]
+full.ols = lm(surv30.logit~., data = rhs_study)
+mse.full.ols = sum((full.ols$fitted.values - rhs_study$surv30.logit)^2)
+
+# OLS with interaction terms
+## Calculate MSE
+full.int.ols = lm(surv30.logit ~ . + .:rhc, data = rhs_study)
+mse.full.int = sum((full.int.ols$fitted.values - rhs_study$surv30.logit)^2)
+
+# Random Forest
+## Calculate MSE
+rand.forest.full.20 = randomForest(surv30.logit ~ ., data = rhs_study,
+                                ntree = 20)
+mse.forest.20 = sum((rand.forest.full.20$predicted - rhs_study$surv30.logit)^2)
+
+rand.forest.full.100 = randomForest(surv30.logit ~ ., data = rhs_study,
+                                   ntree = 100)
+mse.forest.100 = sum((rand.forest.full.100$predicted - rhs_study$surv30.logit)^2)
+
+rand.forest.full.500 = randomForest(surv30.logit ~ ., data = rhs_study,
+                                    ntree = 500)
+mse.forest.500 = sum((rand.forest.full.500$predicted - rhs_study$surv30.logit)^2)
+
+rand.forest.full.1000 = randomForest(surv30.logit ~ ., data = rhs_study,
+                                    ntree = 1000)
+mse.forest.1000 = sum((rand.forest.full.1000$predicted - rhs_study$surv30.logit)^2)
+
+rand.forest.int.20 = randomForest(surv30.logit ~ . + .:rhc, data = rhs_study,
+                                ntree = 20)
+mse.forest.int.20 = sum((rand.forest.full.20$predicted - rhs_study$surv30.logit)^2)
+
+rand.forest.int.100 = randomForest(surv30.logit ~ .+ .:rhc, data = rhs_study,
+                                   ntree = 100)
+mse.forest.int.100 = sum((rand.forest.full.100$predicted - rhs_study$surv30.logit)^2)
+
+rand.forest.int.500 = randomForest(surv30.logit ~ .+ .:rhc, data = rhs_study,
+                                    ntree = 500)
+mse.forest.int.500 = sum((rand.forest.full.500$predicted - rhs_study,$surv30.logit)^2)
+
+rand.forest.int.1000 = randomForest(surv30.logit ~ .+ .:rhc, data = rhs_study,
+                                    ntree = 1000)
+mse.forest.int.1000 = sum((rand.forest.full.1000$predicted - rhs_study$surv30.logit)^2)
+
+
+# BART or something
+## Calculate MSE
+
+# Whichever model is best use that to do the prediction.  How to find PMSE?
+
+# Differences between True and False
+## Histogram.
+
+# She does want some Bayesian stuff for prediction.  Find the individual one with 0 in the confidence interval
+
+# Dig into the values with a positive differences
+
+# Bootstrapping for the confidence intervals.  Look up how to do this.
+
+# For some of the methods, we know the variance, for others we don't, we need to bootstrap
+
+# There should be some bayesian thing for prediction

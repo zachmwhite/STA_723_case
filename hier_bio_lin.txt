@@ -3,20 +3,54 @@ model
     for (i in 1:N) {
         Y[i] ~ dnorm(mu[i], phi)
         mu[i] <- int + alpha[labnum[i]] + gamma[protocol[i]] + 
-            beta_EE[labnum[i]] * EE[i] + beta_ZM[labnum[i]] * 
-            ZM[i]
+            beta_EE0[labnum[i]] * EE0[i] + beta_EE0.01[labnum[i]] * 
+            EE0.01[i] + beta_EE0.03[labnum[i]] * EE0.03[i] + 
+            beta_EE0.1[labnum[i]] * EE0.1[i] + beta_EE0.3[labnum[i]] * 
+            EE0.3[i] + beta_EE1[labnum[i]] * EE1[i] + beta_EE3[labnum[i]] * 
+            EE3[i] + beta_EE3[labnum[i]] * EE3[i] + beta_EE10[labnum[i]] * 
+            EE10[i] + beta_ZM0[labnum[i]] * ZM0[i] + beta_ZM0.1[labnum[i]] * 
+            ZM0.1[i] + beta_ZM1[labnum[i]] * ZM1[i] + beta_EE_prot0[protocol[i]] * 
+            EE0[i] + beta_EE_prot0.01[protocol[i]] * EE0.01[i] + 
+            beta_EE_prot0.03[protocol[i]] * EE0.03[i] + beta_EE_prot0.1[protocol[i]] * 
+            EE0.1[i] + beta_EE_prot0.3[protocol[i]] * EE0.3[i] + 
+            beta_EE_prot1[protocol[i]] * EE1[i] + beta_EE_prot3[protocol[i]] * 
+            EE3[i] + beta_EE_prot3[protocol[i]] * EE3[i] + beta_EE_prot10[protocol[i]] * 
+            EE10[i] + beta_ZM_prot0[protocol[i]] * ZM0[i] + beta_ZM_prot0.1[protocol[i]] * 
+            ZM0.1[i] + beta_ZM_prot1[protocol[i]] * ZM1[i]
     }
     alpha[1] <- 0.00000E+00
     gamma[1] <- 0.00000E+00
-    beta_EE[1] <- 0.00000E+00
-    beta_ZM[1] <- 0.00000E+00
     for (j in 2:aN) {
         alpha[j] ~ dnorm(alpha.mu, alpha.phi)
-        beta_EE[j] ~ dnorm(0.00000E+00, 1.00000E-05)
-        beta_ZM[j] ~ dnorm(0.00000E+00, 1.00000E-05)
+    }
+    for (m in 1:aN) {
+        beta_EE0[m] ~ dnorm(0.00000E+00, 1.00000E-05)
+        beta_EE0.01[m] ~ dnorm(0.00000E+00, 1.00000E-05)
+        beta_EE0.03[m] ~ dnorm(0.00000E+00, 1.00000E-05)
+        beta_EE0.1[m] ~ dnorm(0.00000E+00, 1.00000E-05)
+        beta_EE0.3[m] ~ dnorm(0.00000E+00, 1.00000E-05)
+        beta_EE1[m] ~ dnorm(0.00000E+00, 1.00000E-05)
+        beta_EE3[m] ~ dnorm(0.00000E+00, 1.00000E-05)
+        beta_EE10[m] ~ dnorm(0.00000E+00, 1.00000E-05)
+        beta_ZM0[m] ~ dnorm(0.00000E+00, 1.00000E-05)
+        beta_ZM0.1[m] ~ dnorm(0.00000E+00, 1.00000E-05)
+        beta_ZM1[m] ~ dnorm(0.00000E+00, 1.00000E-05)
     }
     for (k in 2:gN) {
         gamma[k] ~ dnorm(gamma.mu, gamma.phi)
+    }
+    for (l in 1:gN) {
+        beta_EE_prot0[l] ~ dnorm(0.00000E+00, 1.00000E-06)
+        beta_EE_prot0.01[l] ~ dnorm(0.00000E+00, 1.00000E-06)
+        beta_EE_prot0.03[l] ~ dnorm(0.00000E+00, 1.00000E-06)
+        beta_EE_prot0.1[l] ~ dnorm(0.00000E+00, 1.00000E-06)
+        beta_EE_prot0.3[l] ~ dnorm(0.00000E+00, 1.00000E-06)
+        beta_EE_prot1[l] ~ dnorm(0.00000E+00, 1.00000E-06)
+        beta_EE_prot3[l] ~ dnorm(0.00000E+00, 1.00000E-06)
+        beta_EE_prot10[l] ~ dnorm(0.00000E+00, 1.00000E-06)
+        beta_ZM_prot0[l] ~ dnorm(0.00000E+00, 1.00000E-06)
+        beta_ZM_prot0.1[l] ~ dnorm(0.00000E+00, 1.00000E-06)
+        beta_ZM_prot1[l] ~ dnorm(0.00000E+00, 1.00000E-06)
     }
     phi ~ dgamma(1.00000E-05, 1.00000E-05)
     sigma2 <- 1/(phi * phi)

@@ -1,0 +1,379 @@
+#HW05 Real stuff
+# Build two models.  One for site and one for protocol.  I think that's the best solution I can tell.
+# Way to paramterized without it.
+
+# Build both of these models in JAGS
+# I need to figure out how to do this withANOVA.  They aren't balanced so it's not that simple
+#
+###################################################################################
+# Hierarchiacl with varying intercepts for both and varying slope for site
+## Maybe a little bit more simple.  Use frecuentist for test this?
+
+
+###################################################################################
+# Hierarchical with varying intercepts for both.
+## For varying slope for protocol and random effects fo the other stuff
+
+Overall conclusions: One model has way to many parameters, and it doesn't even seem identifiable.
+
+Build two models
+One targeted for the site and one for the protocol.  Unless I can find a way to make this more flexible.
+There are too many parameters.  If I make this an ANOVA problem, will this help.  Do more research on bayesian anova in JAGS
+
+One model has way too many parameters, and the wa I've done it isn't identifiable.
+
+Do the ANOVA stuff with the interactions.  This is a decent gut check. BUT IT'S NOTE BALANCE, which is a challenge.
+
+
+bio.frame = as.data.frame(bio)
+bio.frame$EE = as.factor(bio.frame$EE)
+bio.frame$ZM = as.factor(bio.frame$ZM)
+bio.frame$protnum = as.integer(bio.frame$protocol)
+bio.frame$labnum = as.integer(bio.frame$lab)
+bio.frame$numEE = as.integer(bio.frame$EE)
+bio.frame$numZM = as.integer(bio.frame$ZM)
+
+labnum = bio.frame$labnum
+protocol = bio.frame$protnum
+weight = bio.frame$weight
+group = bio.frame$group
+Y = bio.frame$uterus
+EE = bio.frame$numEE
+ZM = bio.frame$numZM
+N = nrow(bio.frame)
+aN = length(unique(bio.frame$labnum))
+gN = length(unique(bio.frame$protnum))
+b2N = length(unique(bio.frame$numEE))
+b3N = length(unique(bio.frame$numZM))
+data = list(labnum = labnum, protocol = protocol, weight = weight, Y=Y, EE = EE, ZM = ZM,
+            N = N, aN = aN, gN = gN, b2N = b2N, b3N = b3N, group = group)
+hier.bio = function(){
+  for(i in 1:N){
+    Y[i] ~ dnorm(mu[i],phi)
+    mu[i] <- int + alpha[labnum[i]] + gamma[protocol[i]] + beta1 * weight[i] + beta2[EE[i]] + beta3[ZM[i]] + beta4 * group[i] 
+  }
+  alpha[1] <- 0
+  gamma[1] <- 0
+  beta2[1] <- 0
+  beta3[1] <- 0
+  for(j in 2:aN){
+    alpha[j] ~ dnorm(alpha.mu, alpha.phi)
+  }
+  for(k in 2:gN){
+    gamma[k] ~ dnorm(gamma.mu, gamma.phi)
+  }
+  for(l in 2:b2N){
+    beta2[l] ~ dnorm(beta2.mu, beta2.phi)
+  }
+  for(m in 2:b3N){
+    beta3[m] ~ dnorm(beta3.mu, beta3.phi)
+  }
+  # Overall variance
+  phi ~ dgamma(.00001,.00001)
+  sigma2 <- 1 / (phi*phi)
+  # Lab
+  alpha.mu ~ dnorm(0,.00001)
+  alpha.phi ~ dgamma(.00001,.00001)
+  sigma2.alpha <- 1 / alpha.phi
+  
+  # Protocol
+  gamma.mu ~ dnorm(0,.00001)
+  gamma.phi ~ dgamma(.00001,.00001)
+  sigma2.gamma <- 1 / gamma.phi
+  
+  # EE
+  beta2.mu ~ dnorm(0,.00001)
+  beta2.phi ~ dgamma(.00001,.00001)
+  sigma2.beta2 <- 1 / beta2.phi
+  
+  # ZM
+  beta3.mu ~ dnorm(0,.00001)
+  beta3.phi ~ dgamma(.00001,.00001)
+  sigma2.beta3 <- 1 / beta3.phi
+  
+  # Overall covariates
+  int ~ dnorm(0,.00001)
+  beta1 ~ dnorm(0,.00001)
+  beta4 ~ dnorm(0,.00001)
+}
+parameters = c("int", "beta1", "beta4", "alpha", "gamma", "beta2","beta3", "alpha.mu", "gamma.mu","beta2.mu", "beta3.mu",
+               "sigma2.alpha","sigma2.gamma","sigma2.beta2","sigma2.beta3")
+
+model.file = "hier_bio.txt"
+write.model(hier.bio, model.file)
+
+sims = jags(data, inits = NULL, parameters.to.save = parameters, model.file = hier.bio,n.chains = 2, n.iter = 10000)
+post.samps = sims$BUGSoutput$sims.matrix
+summary(post.samps)
+
+################################################################
+lab1.index = which(bio.frame$labnum ==1)
+lab2.index = which(bio.frame$labnum ==2)
+lab3.index = which(bio.frame$labnum ==3)
+lab4.index= which(bio.frame$labnum ==4)
+lab5.index= which(bio.frame$labnum ==5)
+lab6.index= which(bio.frame$labnum ==6)
+lab7.index= which(bio.frame$labnum ==7)
+lab8.index= which(bio.frame$labnum ==8)
+lab9.index= which(bio.frame$labnum ==9)
+lab10.index= which(bio.frame$labnum ==10)
+lab11.index= which(bio.frame$labnum ==11)
+lab12.index= which(bio.frame$labnum ==12)
+lab13.index= which(bio.frame$labnum ==13)
+lab14.index= which(bio.frame$labnum ==14)
+lab15.index= which(bio.frame$labnum ==15)
+lab16.index= which(bio.frame$labnum ==16)
+lab17.index= which(bio.frame$labnum ==17)
+lab18.index= which(bio.frame$labnum ==18)
+lab19.index= which(bio.frame$labnum ==19)
+
+prot1.index = which(bio.frame$protnum ==1)
+prot2.index= which(bio.frame$protnum ==2)
+prot3.index= which(bio.frame$protnum ==3)
+prot4.index= which(bio.frame$protnum ==4)
+
+EEcontrol = which(bio.frame$EE == 0)
+EE.01 = which(bio.frame$EE == 0.01)
+EE.03 = which(bio.frame$EE == 0.03)
+EE.1 = which(bio.frame$EE == 0.1)
+EE.3 = which(bio.frame$EE == 0.3)
+EE1 = which(bio.frame$EE == 1)
+EE3 = which(bio.frame$EE == 3)
+EE10 = which(bio.frame$EE == 10)
+
+ZMcontrol = which(bio.frame$ZM == 0)
+ZM.1= which(bio.frame$ZM == 0.1)
+ZM1= which(bio.frame$ZM == 1)
+
+
+lab.cont.mat = matrix(NA, ncol = length(unique(bio.frame$labnum)), nrow = 264)
+lab.01.mat = matrix(NA, ncol = length(unique(bio.frame$labnum)), nrow = 264)
+lab.03.mat= matrix(NA, ncol = length(unique(bio.frame$labnum)), nrow = 264)
+lab.1.mat= matrix(NA, ncol = length(unique(bio.frame$labnum)), nrow = 264)
+lab.3.mat= matrix(NA, ncol = length(unique(bio.frame$labnum)), nrow = 264)
+lab1.mat= matrix(NA, ncol = length(unique(bio.frame$labnum)), nrow = 264)
+lab3.mat= matrix(NA, ncol = length(unique(bio.frame$labnum)), nrow = 264)
+lab10.mat= matrix(NA, ncol = length(unique(bio.frame$labnum)), nrow = 264)
+
+lab.zm.cont = matrix(NA, ncol = length(unique(bio.frame$labnum)), nrow = 264)
+lab.1.zm = matrix(NA, ncol = length(unique(bio.frame$labnum)), nrow = 264)
+lab1.zm= matrix(NA, ncol = length(unique(bio.frame$labnum)), nrow = 264)
+
+prot.cont.mat = matrix(NA, ncol = length(unique(bio.frame$protnum)), nrow = 264)
+prot.01.mat = matrix(NA, ncol = length(unique(bio.frame$protnum)), nrow = 264)
+prot.03.mat= matrix(NA, ncol = length(unique(bio.frame$protnum)), nrow = 264)
+prot.1.mat= matrix(NA, ncol = length(unique(bio.frame$protnum)), nrow = 264)
+prot.3.mat= matrix(NA, ncol = length(unique(bio.frame$protnum)), nrow = 264)
+prot1.mat= matrix(NA, ncol = length(unique(bio.frame$protnum)), nrow = 264)
+prot3.mat= matrix(NA, ncol = length(unique(bio.frame$protnum)), nrow = 264)
+prot10.mat= matrix(NA, ncol = length(unique(bio.frame$protnum)), nrow = 264)
+
+prot.zm.cont = matrix(NA, ncol = length(unique(bio.frame$protnum)), nrow = 264)
+prot.1.zm = matrix(NA, ncol = length(unique(bio.frame$protnum)), nrow = 264)
+prot1.zm= matrix(NA, ncol = length(unique(bio.frame$protnum)), nrow = 264)
+
+lab.mat = matrix(NA, nrow = 264, ncol = 19)
+lab.mat[,1] = 
+lab1.index = which(bio.frame$labnum ==1)
+lab2.index = which(bio.frame$labnum ==2)
+lab3.index = which(bio.frame$labnum ==3)
+lab4.index= which(bio.frame$labnum ==4)
+lab5.index= which(bio.frame$labnum ==5)
+lab6.index= which(bio.frame$labnum ==6)
+lab7.index= which(bio.frame$labnum ==7)
+lab8.index= which(bio.frame$labnum ==8)
+lab9.index= which(bio.frame$labnum ==9)
+lab10.index= which(bio.frame$labnum ==10)
+lab11.index= which(bio.frame$labnum ==11)
+lab12.index= which(bio.frame$labnum ==12)
+lab13.index= which(bio.frame$labnum ==13)
+lab14.index= which(bio.frame$labnum ==14)
+lab15.index= which(bio.frame$labnum ==15)
+lab16.index= which(bio.frame$labnum ==16)
+lab17.index= which(bio.frame$labnum ==17)
+lab18.index= which(bio.frame$labnum ==18)
+lab19.index= which(bio.frame$labnum ==19)
+lab.mat = matrix(NA, nrow = 264, ncol = 19)
+
+prot1.index = which(bio.frame$protnum ==1)
+prot2.index= which(bio.frame$protnum ==2)
+prot3.index= which(bio.frame$protnum ==3)
+prot4.index= which(bio.frame$protnum ==4)
+prot.mat = matrix(NA,ncol = 4, nrow = 1030)
+
+EEcontrol = which(bio.frame$EE == 0)
+EE.01 = which(bio.frame$EE == 0.01)
+EE.03 = which(bio.frame$EE == 0.03)
+EE.1 = which(bio.frame$EE == 0.1)
+EE.3 = which(bio.frame$EE == 0.3)
+EE1 = which(bio.frame$EE == 1)
+EE3 = which(bio.frame$EE == 3)
+EE10 = which(bio.frame$EE == 10)
+EE.mat = matrix(NA,ncol = 8, nrow = 484)
+
+ZMcontrol = which(bio.frame$ZM == 0)
+ZM.1= which(bio.frame$ZM == 0.1)
+ZM1= which(bio.frame$ZM == 1)
+zm.mat = matrix(NA,ncol = 3, nrow = 2186)
+
+
+###########################################################################
+lab1.cont = which(lab1.index == EEcontrol)
+lab.cont = which(lab1.index == EEcontrol)
+
+lab.cont.mat = matrix(NA, ncol = length(unique(bio.frame$labnum)), nrow = 264)
+lab.01.mat = matrix(NA, ncol = length(unique(bio.frame$labnum)), nrow = 264)
+lab.03.mat= matrix(NA, ncol = length(unique(bio.frame$labnum)), nrow = 264)
+lab.1.mat= matrix(NA, ncol = length(unique(bio.frame$labnum)), nrow = 264)
+lab.3.mat= matrix(NA, ncol = length(unique(bio.frame$labnum)), nrow = 264)
+lab1.mat= matrix(NA, ncol = length(unique(bio.frame$labnum)), nrow = 264)
+lab3.mat= matrix(NA, ncol = length(unique(bio.frame$labnum)), nrow = 264)
+lab10.mat= matrix(NA, ncol = length(unique(bio.frame$labnum)), nrow = 264)
+
+lab.zm.cont = matrix(NA, ncol = length(unique(bio.frame$labnum)), nrow = 264)
+lab.1.zm = matrix(NA, ncol = length(unique(bio.frame$labnum)), nrow = 264)
+lab1.zm= matrix(NA, ncol = length(unique(bio.frame$labnum)), nrow = 264)
+
+prot.cont.mat = matrix(NA, ncol = length(unique(bio.frame$protnum)), nrow = 264)
+prot.01.mat = matrix(NA, ncol = length(unique(bio.frame$protnum)), nrow = 264)
+prot.03.mat= matrix(NA, ncol = length(unique(bio.frame$protnum)), nrow = 264)
+prot.1.mat= matrix(NA, ncol = length(unique(bio.frame$protnum)), nrow = 264)
+prot.3.mat= matrix(NA, ncol = length(unique(bio.frame$protnum)), nrow = 264)
+prot1.mat= matrix(NA, ncol = length(unique(bio.frame$protnum)), nrow = 264)
+prot3.mat= matrix(NA, ncol = length(unique(bio.frame$protnum)), nrow = 264)
+prot10.mat= matrix(NA, ncol = length(unique(bio.frame$protnum)), nrow = 264)
+
+prot.zm.cont = matrix(NA, ncol = length(unique(bio.frame$protnum)), nrow = 264)
+prot.1.zm = matrix(NA, ncol = length(unique(bio.frame$protnum)), nrow = 264)
+prot1.zm= matrix(NA, ncol = length(unique(bio.frame$protnum)), nrow = 264)
+
+
+levels.ee = unique(bio.frame$EE)
+levels.zm = unique(bio.frame$ZM)
+lab.mat = matrix(NA, nrow = 264, ncol = 19)
+prot.mat = matrix(NA,ncol = 4, nrow = 1030)
+EE.mat = matrix(NA,ncol = 8, nrow = 484)
+zm.mat = matrix(NA,ncol = 3, nrow = 2186)
+for(i in 1:19){
+  length.vals = length(which(bio.frame$labnum == i))
+  lab.mat[1:length.vals,i] = which(bio.frame$labnum == i)
+  if(i <= 4){
+    length.prot = length(which(bio.frame$protnum == i))
+    if(length.prot > 0){
+      prot.mat[1:length.prot,i] = which(bio.frame$protnum ==i)
+    }
+  }
+  if(i <= 8){
+    length.ee = length(which(bio.frame$ee == levels.ee[i]))
+    if(length.ee > 0){
+      EE.mat[1:length.ee,i] = which(bio.frame$EE == levels.ee[i])
+    }
+  }
+  if(i <= 3){
+    length.zm = length(which(bio.frame$ZM == levels.zm[i]))
+    if(length.zm > 0){
+    zm.mat[1:length.zm,i] = which(bio.frame$ZM == levels.zm[i])
+    }
+  }
+}
+
+for(i in 1:19){
+  length.lab = which(lab.mat[,i] == EE.mat[,1])
+  if(length.lab > 0){
+    lab.cont.mat[,i] = which(lab.mat[,i] == EE.mat[,1])
+  }
+  length.lab = which(lab.mat[,i] == EE.mat[,2])
+  if(length.lab > 0){
+    lab.01.mat[,i] = which(lab.mat[,i] == EE.mat[,2])
+  }
+  length.lab = which(lab.mat[,i] == EE.mat[,3])
+  if(length.lab > 0){
+    lab.03.mat[,i] = which(lab.mat[,i] == EE.mat[,3])
+  }
+  length.lab = which(lab.mat[,i] == EE.mat[,4])
+  if(length.lab > 0){
+    lab.1.mat[,i] = which(lab.mat[,i] == EE.mat[,4])
+  }
+  length.lab = which(lab.mat[,i] == EE.mat[,5])
+  if(length.lab > 0){
+    lab.3.mat[,i] = which(lab.mat[,i] == EE.mat[,5])
+  }
+  length.lab = which(lab.mat[,i] == EE.mat[,6])
+  if(length.lab > 0){
+    lab1.mat[,i] = which(lab.mat[,i] == EE.mat[,6])
+  }
+  length.lab = which(lab.mat[,i] == EE.mat[,7])
+  if(length.lab > 0){
+    lab3.mat[,i] = which(lab.mat[,i] == EE.mat[,7])
+  }
+  length.lab = which(lab.mat[,i] == EE.mat[,8])
+  if(length.lab > 0){
+    lab10.mat[,i] = which(lab.mat[,i] == EE.mat[,8])
+  }
+
+  if(i <= 4){
+    length.prot = length(which(prot.mat[,i]== EE.mat[,1]))
+    if(length.lab > 0){
+      prot.cont.mat[1:length.prot,i] = which(prot.mat[,i] == EE.mat[,1])
+    }
+    length.prot = length(which(prot.mat[,i]== EE.mat[,2]))
+    if(length.lab > 0){
+      prot.01.mat[1:length.prot,i] = which(prot.mat[,i] == EE.mat[,2])
+    }
+    length.prot = length(which(prot.mat[,i]== EE.mat[,3]))
+    if(length.lab > 0){
+      prot.03.mat[1:length.prot,i] = which(prot.mat[,i] == EE.mat[,3])
+    }
+    length.prot = length(which(prot.mat[,i]== EE.mat[,4]))
+    if(length.lab > 0){
+      prot.1.mat[1:length.prot,i] = which(prot.mat[,i] == EE.mat[,4])
+    }
+    length.prot = length(which(prot.mat[,i]== EE.mat[,5]))
+    if(length.lab > 0){
+      prot.3.mat[1:length.prot,i] = which(prot.mat[,i] == EE.mat[,5])
+    }
+    length.prot = length(which(prot.mat[,i]== EE.mat[,6]))
+    if(length.lab > 0){
+      prot1.mat[1:length.prot,i] = which(prot.mat[,i] == EE.mat[,6])
+    }
+    length.prot = length(which(prot.mat[,i]== EE.mat[,7]))
+    if(length.lab > 0){
+      prot3.mat[1:length.prot,i] = which(prot.mat[,i] == EE.mat[,7])
+    }
+    length.prot = length(which(prot.mat[,i]== EE.mat[,8]))
+    if(length.lab > 0){
+      prot10.mat[1:length.prot,i] = which(prot.mat[,i] == EE.mat[,8])
+    }
+    
+  }
+}
+
+
+On February 24, 2017
+820-10 = work on the t-test simulations
+I've got the indices down.  I just need to run that code.
+I can incorporate the t-tests against the control pretty easily
+Work on some relevant posterio plots
+Posterior draws
+Model validation = posterior checks
+
+1130-1 = work on inference stuff
+
+240-330 = work on write-up
+Write
+
+520 - 9 =  Work on write-up
+Write and plots = Mostly just writing.
+9-11 = Work on new data set?
+
+
+February 25, 2017
+9-12 New dataset
+If I can get something now, beautiful
+12-5 Scotts homework
+Mostly multivariate normal stuff
+SHouldn't be too bad
+Look up doubly stochastic
+5-8 New dataset Presentation
+Plots and motivation and results can be on Monday
+
